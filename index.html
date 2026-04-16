@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>个人信息卡片</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 模式切换按钮 -->
+  <button id="themeToggle" class="theme-btn">🌙 夜间模式</button>
+
+  <!-- 卡片容器 -->
+  <div class="card">
+    <!-- 左上角标题 -->
+    <h1 class="card-title">个人信息卡片</h1>
+    
+    <!-- 主内容区域 -->
+    <div class="card-content">
+      <!-- 左栏：头像、姓名、出生日期区域 -->
+      <div class="left-column">
+        <!-- 头像容器 -->
+        <div class="avatar-section">
+          <div class="avatar-label">头像</div>
+          <div class="avatar-container">
+            <img 
+              id="avatar" 
+              src="https://via.placeholder.com/120x120/6a9eff/fff?text=头像" 
+              alt="个人头像" 
+              class="avatar"
+            />
+          </div>
+          <!-- 更换头像按钮 -->
+          <div class="avatar-button-container">
+            <input 
+              type="file" 
+              id="avatarUpload" 
+              accept="image/*" 
+              style="display: none;"
+            />
+            <button id="uploadBtn" class="uploadBtn">更换头像</button>
+          </div>
+        </div>
+        
+        <!-- 姓名区域 -->
+        <div class="name-section">
+          <div class="info-label">姓名</div>
+          <div class="input-with-icon">
+            <input 
+              type="text" 
+              id="nameInput" 
+              class="info-input"
+              placeholder="请输入姓名"
+              value="张欣"
+            />
+            <span class="edit-icon">✎</span>
+          </div>
+        </div>
+        
+        <!-- 出生日期区域 -->
+        <div class="birthday-section">
+          <div class="info-label">出生日期</div>
+          <div class="input-with-icon">
+            <input 
+              type="date" 
+              id="birthdayInput" 
+              class="info-input"
+              value="2006-12-11"
+            />
+            <span class="edit-icon">✎</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右栏：个人简介区域 -->
+      <div class="right-column">
+        <!-- 个人简介区域 -->
+        <div class="intro-section full-height">
+          <div class="intro-header">
+            <div class="info-label">个人简介</div>
+            <div class="intro-hint"></div>
+          </div>
+          <div class="input-with-icon large">
+            <textarea 
+              id="introInput" 
+              class="info-textarea"
+              placeholder="请输入个人简介"
+            >张欣，湖南衡阳人，现就读于湖南科技大学计算机科学与工程学院，24级计科五班大二学生，共青团员。大一期间深耕专业学习，扎实夯实计算机学科基础，获评国家励志奖学金、校级三好学生、特殊贡献奖等荣誉。
+
+目前为校ACM队成员，深耕算法竞赛领域，主攻C++算法。获得湖南科技大学新生赛二等奖，计算机二级比赛一等奖等。学生工作方面，大一期间担任学院学生会学习部委员，完成查课、检查卫生及协助部分活动开展等；大二转任班级组宣委员，负责班级团日活动策划、宣传物料制作及班级动态公示。
+
+兴趣爱好方面，热爱追剧，在剧情中感受多元叙事与人文故事；热衷旅游，打卡各地人文景点与自然风光，在行走中拓宽视野、丰富阅历。
+
+个人成长目标：持续夯实计算机专业核心基础，深耕算法竞赛领域，兼顾学生工作与个人发展，以踏实进取的态度，在技术学习与综合能力提升的道路上稳步前行，努力成长为兼具专业素养与责任担当的新时代青年。</textarea>
+            <span class="edit-icon">✎</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 保存按钮 -->
+    <div class="save-section">
+      <button id="saveBtn" class="saveBtn">保存信息</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

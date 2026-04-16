@@ -1,0 +1,882 @@
+/* 全局重置 & 基础样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: flex-start; /* 向左对齐 */
+  align-items: center;
+  padding: 20px;
+  transition: background 0.8s ease, color 0.8s ease;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ========== 白天模式 ========== */
+body:not(.night-mode) {
+  background: linear-gradient(135deg, 
+    #ff7e5f 0%,    /* 深橙色 */
+    #feb47b 25%,   /* 橙色 */
+    #ffb88c 50%,   /* 淡橙色 */
+    #ffd1b3 75%,   /* 浅橙色 */
+    #fff5e6 100%   /* 米白色 */
+  );
+  background-attachment: fixed;
+  animation: daySkyAnimation 20s infinite alternate ease-in-out;
+}
+
+/* 太阳 - 在卡片右上角 */
+body:not(.night-mode) .sun {
+  position: absolute;
+  top: 8%;
+  right: 8%;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle at 30% 30%, 
+    #ff6b35 0%,
+    #ff8c42 20%,
+    #ff9a5a 40%,
+    #ffb347 60%,
+    #ffcc5c 100%
+  );
+  border-radius: 50%;
+  box-shadow: 
+    0 0 60px rgba(255, 107, 53, 0.8),
+    0 0 100px rgba(255, 140, 66, 0.6),
+    0 0 140px rgba(255, 154, 90, 0.4);
+  animation: sunsetGlow 8s infinite alternate ease-in-out;
+  z-index: 2;
+}
+
+/* 太阳光晕 */
+body:not(.night-mode) .sun::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, 
+    rgba(255, 107, 53, 0.2) 0%,
+    rgba(255, 140, 66, 0.1) 30%,
+    rgba(255, 154, 90, 0.05) 50%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  z-index: 1;
+  animation: sunRays 12s infinite linear;
+}
+
+/* 动态云朵 */
+body:not(.night-mode) .cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50px;
+  filter: blur(5px);
+  z-index: 0;
+  animation: cloudFloat 25s linear infinite;
+}
+
+body:not(.night-mode) .cloud.small {
+  width: 60px;
+  height: 30px;
+  top: 20%;
+  left: 10%;
+  animation-duration: 30s;
+  animation-delay: 0s;
+}
+
+body:not(.night-mode) .cloud.medium {
+  width: 100px;
+  height: 50px;
+  top: 15%;
+  right: 15%;
+  animation-duration: 35s;
+  animation-delay: 5s;
+}
+
+body:not(.night-mode) .cloud.large {
+  width: 80px;
+  height: 40px;
+  top: 25%;
+  left: 20%;
+  animation-duration: 40s;
+  animation-delay: 10s;
+}
+
+/* 光斑效果 */
+body:not(.night-mode) .light-spot {
+  position: absolute;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: lightSpotMove 15s infinite ease-in-out;
+  z-index: 0;
+}
+
+/* ========== 夜间模式 ========== */
+body.night-mode {
+  background: linear-gradient(135deg,
+    #0b132b 0%,
+    #1c2541 30%,
+    #3a506b 60%,
+    #1c2541 100%
+  );
+  animation: nightSkyShift 30s infinite alternate;
+}
+
+/* 月亮 - 在卡片右上角，与太阳位置完全一致 */
+body.night-mode .moon {
+  position: absolute;
+  top: 8%;  /* 与太阳相同位置 */
+  right: 8%;  /* 与太阳相同位置 */
+  width: 80px;  /* 与太阳相同大小 */
+  height: 80px;  /* 与太阳相同大小 */
+  background: radial-gradient(circle at 30% 30%, 
+    #f8f8f8 0%,
+    #e8e8e8 20%,
+    #d8d8d8 40%,
+    #c8c8c8 60%,
+    #b8b8b8 100%
+  );
+  border-radius: 50%;
+  box-shadow: 
+    0 0 60px rgba(255, 255, 255, 0.8),
+    0 0 100px rgba(240, 240, 240, 0.6),
+    0 0 140px rgba(220, 220, 220, 0.4);
+  animation: moonGlow 8s infinite alternate ease-in-out;
+  z-index: 2;
+}
+
+/* 月亮光晕 */
+body.night-mode .moon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, 
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(240, 240, 240, 0.1) 30%,
+    rgba(220, 220, 220, 0.05) 50%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  z-index: 1;
+  animation: moonRays 12s infinite linear;
+}
+
+/* 星星 - 通过JS动态生成 */
+body.night-mode .star {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle 3s infinite alternate;
+  z-index: 0;
+}
+
+/* 流星 */
+body.night-mode .shooting-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, white);
+  border-radius: 50%;
+  filter: blur(1px);
+  opacity: 0;
+  z-index: 0;
+}
+
+/* ========== 卡片样式 ========== */
+/* 卡片容器 - 调整尺寸，使适合页面 */
+.card {
+  background: #ffffff;
+  padding: 25px 40px 25px 40px; /* 减小上下内边距 */
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 5px 15px rgba(0, 0, 0, 0.08);
+  width: 95%; /* 增加宽度 */
+  max-width: 1500px; /* 增加最大宽度 */
+  min-width: 1000px; /* 增加最小宽度 */
+  transition: all 0.5s ease;
+  z-index: 1; /* 卡片在背景元素下方 */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 减小间距 */
+  margin-left: 40px; /* 向左移动，不居中 */
+  margin-right: auto; /* 确保右边界不动 */
+  height: auto; /* 自动高度 */
+  max-height: 90vh; /* 限制最大高度 */
+  overflow: hidden; /* 隐藏溢出 */
+}
+
+body.night-mode .card {
+  background: #1e293b;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 5px 20px rgba(91, 192, 190, 0.15);
+}
+
+/* 卡片标题 - 左上角蓝色粗体字 */
+.card-title {
+  font-size: 2.2rem; /* 稍微减小标题 */
+  font-weight: 700;
+  color: #0066cc; /* 图片中的蓝色 */
+  text-align: left;
+  margin: 0;
+  width: 100%;
+  transition: all 0.5s ease;
+  letter-spacing: 1px;
+  padding-bottom: 15px; /* 减小标题下边距 */
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+body.night-mode .card-title {
+  color: #5bc0be;
+  border-bottom: 2px solid rgba(91, 192, 190, 0.2);
+}
+
+/* 卡片主内容区域 - 增大高度，为个人简介框留更多空间 */
+.card-content {
+  display: flex;
+  gap: 40px; /* 保持间距 */
+  width: 100%;
+  padding: 10px 0; /* 减小垂直内边距 */
+  align-items: stretch; /* 让左右两列高度一致 */
+  min-height: 600px; /* 增大最小高度，为个人简介框留更多空间 */
+  max-height: calc(90vh - 150px); /* 限制最大高度 */
+  overflow: hidden; /* 隐藏溢出 */
+}
+
+/* 左栏：头像、姓名、出生日期区域 */
+.left-column {
+  flex: 0 0 280px; /* 固定宽度 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 减小各部分的间距 */
+  border-right: 2px solid rgba(0, 0, 0, 0.1);
+  padding-right: 20px;
+  padding-top: 10px; /* 减小顶部内边距 */
+}
+
+body.night-mode .left-column {
+  border-right: 2px solid rgba(91, 192, 190, 0.2);
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* 减小间距 */
+  width: 100%;
+}
+
+.avatar-label {
+  font-size: 1.6rem; /* 稍微减小 */
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  width: 100%;
+  transition: all 0.5s ease;
+  margin-bottom: 5px;
+}
+
+body.night-mode .avatar-label {
+  color: #e0f7ff;
+}
+
+.avatar-container {
+  width: 140px; /* 减小头像尺寸 */
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  border: 3px solid #f0f0f0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+body.night-mode .avatar-container {
+  border: 3px solid #374151;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 5px; /* 减小上边距 */
+}
+
+.uploadBtn {
+  padding: 10px 25px; /* 减小按钮尺寸 */
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem; /* 稍微减小字体 */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 180px; /* 减小按钮最大宽度 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ff6b35; /* 图片中的橙色 */
+  color: white;
+}
+
+.uploadBtn:hover {
+  background: #ff8c42;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 107, 53, 0.4);
+}
+
+.uploadBtn:active {
+  transform: translateY(0);
+}
+
+body.night-mode .uploadBtn {
+  background: linear-gradient(135deg, #5bc0be, #3a506b);
+  color: white;
+}
+
+body.night-mode .uploadBtn:hover {
+  background: linear-gradient(135deg, #3a506b, #5bc0be);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(91, 192, 190, 0.4);
+}
+
+body.night-mode .uploadBtn:active {
+  transform: translateY(0);
+}
+
+/* 姓名区域 */
+.name-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* 减小间距 */
+  width: 100%;
+  margin-top: 5px; /* 减小上边距 */
+}
+
+/* 出生日期区域 */
+.birthday-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* 减小间距 */
+  width: 100%;
+  margin-top: 5px; /* 减小上边距 */
+}
+
+.info-label {
+  font-size: 1.4rem; /* 稍微减小 */
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+body.night-mode .info-label {
+  color: #e0f7ff;
+}
+
+/* 右栏：个人简介区域 - 占据整个右栏 */
+.right-column {
+  flex: 1; /* 占据剩余空间 */
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px; /* 减小顶部内边距 */
+}
+
+/* 个人简介区域 - 占满整个右栏高度 */
+.intro-section.full-height {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 减小间距 */
+  width: 100%;
+  height: 100%; /* 占满整个父容器高度 */
+}
+
+.intro-header {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 减小间距 */
+  margin-bottom: 5px; /* 减小下边距 */
+}
+
+.intro-hint {
+  font-size: 0.9rem; /* 稍微减小 */
+  color: #888;
+  font-style: italic;
+  transition: all 0.3s ease;
+}
+
+body.night-mode .intro-hint {
+  color: rgba(224, 247, 255, 0.7);
+}
+
+/* 输入框带图标 */
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-icon .edit-icon {
+  position: absolute;
+  right: 12px; /* 调整位置 */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 18px; /* 稍微减小 */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.input-with-icon .edit-icon:hover {
+  color: #ff6b35;
+  transform: translateY(-50%) scale(1.2);
+}
+
+body.night-mode .input-with-icon .edit-icon:hover {
+  color: #5bc0be;
+}
+
+/* 大型文本区域 */
+.input-with-icon.large .edit-icon {
+  top: 20px; /* 调整位置 */
+  transform: none;
+}
+
+.input-with-icon.large .edit-icon:hover {
+  transform: scale(1.2);
+}
+
+.info-input,
+.info-textarea {
+  width: 100%;
+  padding: 12px 16px; /* 减小内边距 */
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem; /* 稍微减小 */
+  transition: all 0.3s ease;
+  background: #ffffff;
+  line-height: 1.5;
+  resize: vertical;
+  color: #333;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.info-input:focus,
+.info-textarea:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 8px 25px rgba(0, 102, 204, 0.2);
+  background: white;
+  transform: translateY(-2px);
+}
+
+body.night-mode .info-input,
+body.night-mode .info-textarea {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #374151;
+  color: #e0f7ff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+body.night-mode .info-input:focus,
+body.night-mode .info-textarea:focus {
+  outline: none;
+  border-color: #5bc0be;
+  box-shadow: 0 8px 25px rgba(91, 192, 190, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+/* 个人简介文本框 - 显著增大尺寸，充分利用下方空间 */
+.info-textarea {
+  min-height: 450px; /* 显著增加个人简介区域的高度，充分利用下方空间 */
+  font-family: inherit;
+  padding: 20px; /* 调整内边距 */
+  flex: 1; /* 占满可用空间 */
+  font-size: 1.05rem; /* 稍微增大字体，提高可读性 */
+  line-height: 1.6; /* 增加行高，使文本更易读 */
+}
+
+.info-input::placeholder,
+.info-textarea::placeholder {
+  color: #aaa;
+  font-size: 0.95rem; /* 稍微减小 */
+}
+
+body.night-mode .info-input::placeholder,
+body.night-mode .info-textarea::placeholder {
+  color: rgba(224, 247, 255, 0.5);
+}
+
+/* 日期输入框特定样式 */
+input[type="date"] {
+  font-family: inherit;
+  color: #333;
+}
+
+body.night-mode input[type="date"] {
+  color: #e0f7ff;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* 保存按钮区域 */
+.save-section {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 15px; /* 减小上边距 */
+  padding-top: 20px; /* 减小顶部内边距 */
+  border-top: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+body.night-mode .save-section {
+  border-top: 2px solid rgba(91, 192, 190, 0.2);
+}
+
+.saveBtn {
+  padding: 15px 40px; /* 减小按钮尺寸 */
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem; /* 稍微减小字体 */
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  letter-spacing: 1px;
+  width: 250px; /* 减小按钮宽度 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* 减小图标间距 */
+  background: linear-gradient(135deg, #ff6b35, #ff8c42);
+  color: white;
+}
+
+.saveBtn:hover {
+  background: linear-gradient(135deg, #ff8c42, #ff6b35);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 25px rgba(255, 107, 53, 0.4);
+}
+
+.saveBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+body.night-mode .saveBtn {
+  background: linear-gradient(135deg, #5bc0be, #3a506b);
+  color: white;
+}
+
+body.night-mode .saveBtn:hover {
+  background: linear-gradient(135deg, #3a506b, #5bc0be);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 25px rgba(91, 192, 190, 0.4);
+}
+
+body.night-mode .saveBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* 模式切换按钮 */
+.theme-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px; /* 减小按钮尺寸 */
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.9rem; /* 减小字体 */
+  font-weight: 600;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 6px; /* 减小图标间距 */
+  background: rgba(255, 255, 255, 0.92);
+  color: #ff6b35;
+  border: 2px solid rgba(255, 107, 53, 0.2);
+}
+
+.theme-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+.theme-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+body.night-mode .theme-btn {
+  background: rgba(28, 37, 65, 0.92);
+  color: #5bc0be;
+  border: 2px solid rgba(91, 192, 190, 0.3);
+}
+
+/* ========== 动画定义 ========== */
+/* 白天动画 */
+@keyframes daySkyAnimation {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+@keyframes sunsetGlow {
+  0% { 
+    box-shadow: 
+      0 0 60px rgba(255, 107, 53, 0.8),
+      0 0 100px rgba(255, 140, 66, 0.6),
+      0 0 140px rgba(255, 154, 90, 0.4);
+  }
+  100% { 
+    box-shadow: 
+      0 0 80px rgba(255, 107, 53, 0.9),
+      0 0 120px rgba(255, 140, 66, 0.7),
+      0 0 160px rgba(255, 154, 90, 0.5);
+  }
+}
+
+@keyframes sunRays {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+  50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.1); }
+  100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+}
+
+@keyframes cloudFloat {
+  0% { transform: translateX(-100px); }
+  100% { transform: translateX(calc(100vw + 200px)); }
+}
+
+@keyframes lightSpotMove {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    opacity: 0.4; 
+  }
+  50% { 
+    transform: translate(20px, 15px) scale(1.2);
+    opacity: 0.8; 
+  }
+}
+
+/* 月亮动画 */
+@keyframes moonRays {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+  50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.1); }
+  100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+}
+
+/* 夜间动画 */
+@keyframes nightSkyShift {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+}
+
+@keyframes moonGlow {
+  0% { 
+    box-shadow: 
+      0 0 60px rgba(255, 255, 255, 0.8),
+      0 0 100px rgba(240, 240, 240, 0.6),
+      0 0 140px rgba(220, 220, 220, 0.4);
+  }
+  100% { 
+    box-shadow: 
+      0 0 80px rgba(255, 255, 255, 0.9),
+      0 0 120px rgba(240, 240, 240, 0.7),
+      0 0 160px rgba(220, 220, 220, 0.5);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { 
+    opacity: 0.3; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.1);
+  }
+}
+
+@keyframes shootingStar {
+  0% {
+    transform: translateX(-100px) translateY(0) rotate(45deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(100px) translateY(100px) rotate(45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(200px) translateY(200px) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+/* 消息提示样式 */
+.message {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px; /* 减小内边距 */
+  border-radius: 12px;
+  z-index: 1000;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  animation: messageSlide 0.4s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 减小图标间距 */
+  font-size: 14px; /* 减小字体 */
+  max-width: 80%;
+  text-align: center;
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* 响应式设计 - 调整为更适合桌面 */
+@media (max-width: 1600px) {
+  .card {
+    width: 90%;
+    max-width: 1400px;
+    min-width: 900px;
+    margin-left: 30px;
+  }
+  
+  .card-title {
+    font-size: 2rem;
+  }
+  
+  .left-column {
+    flex: 0 0 250px;
+  }
+  
+  .info-textarea {
+    min-height: 400px; /* 响应式调整 */
+  }
+}
+
+@media (max-width: 1200px) {
+  .card {
+    width: 85%;
+    max-width: 1100px;
+    min-width: 800px;
+    margin-left: 20px;
+  }
+  
+  .card-title {
+    font-size: 1.8rem;
+  }
+  
+  .left-column {
+    flex: 0 0 220px;
+  }
+  
+  .info-textarea {
+    min-height: 380px; /* 响应式调整 */
+  }
+  
+  .saveBtn {
+    width: 200px;
+    padding: 12px 30px;
+  }
+}
+
+@media (max-width: 992px) {
+  .card {
+    width: 90%;
+    min-width: auto;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+  
+  .card-title {
+    font-size: 1.6rem;
+  }
+  
+  .card-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .left-column {
+    flex: none;
+    width: 100%;
+    padding-right: 0;
+    border-right: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 20px;
+  }
+  
+  body.night-mode .left-column {
+    border-bottom: 2px solid rgba(91, 192, 190, 0.2);
+  }
+  
+  .info-textarea {
+    min-height: 350px; /* 响应式调整 */
+  }
+  
+  .saveBtn {
+    width: 180px;
+  }
+  
+  .info-label {
+    font-size: 1.2rem;
+  }
+}
